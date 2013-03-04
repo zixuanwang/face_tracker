@@ -4,6 +4,7 @@
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
 #include <boost/geometry/geometries/adapted/boost_tuple.hpp>
+#include <GL/glut.h>
 
 // indices of landmarks
 int left_eye_indices[] = {32,72,33,73,34,74,35,75};
@@ -71,9 +72,23 @@ parse_help(int argc,char** argv)
     if(str.length() == 6){if(strcmp(str.c_str(),"--help") == 0)return true;}
   }return false;
 }
+
+void renderScene(void) {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glBegin(GL_TRIANGLES);
+		glVertex3f(-0.5,-0.5,0.0);
+		glVertex3f(0.5,0.0,0.0);
+		glVertex3f(0.0,0.5,0.0);
+	glEnd();
+
+	glutSwapBuffers();
+}
+
 //==============================================================================
 int main(int argc,char** argv)
 {
+	/*
   //parse command line arguments
   if(parse_help(argc,argv)){cout << usage << endl; return 0;}
   if(argc < 2){cout << usage << endl; return 0;}
@@ -114,4 +129,16 @@ int main(int argc,char** argv)
     else if(c == 'd')tracker.reset();
   }
   destroyWindow("face tracker"); cam.release(); return 0;
+  */
+	glutInit(&argc, argv);
+	glutInitWindowSize(600,600);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+	glutCreateWindow("Lighthouse3D- GLUT Tutorial");
+	// register callbacks
+	glutDisplayFunc(renderScene);
+	// enter GLUT event processing cycle
+	glutMainLoop();
+
+
+	return 0;
 }

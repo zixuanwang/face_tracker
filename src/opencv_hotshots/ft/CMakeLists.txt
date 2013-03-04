@@ -8,6 +8,6 @@ SET(ft_sources
 )
 ADD_LIBRARY(ft ${ft_sources})
 
-TARGET_LINK_LIBRARIES(ft ${OpenCV_LIBS} ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(ft ${OpenCV_LIBS})
 
 SUBDIRS(exe)

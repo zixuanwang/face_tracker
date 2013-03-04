@@ -31,9 +31,8 @@ detect(const Mat &im,
 
   //detect faces
   vector<Rect> faces; Mat eqIm; equalizeHist(gray,eqIm);
-  detector.detectMultiScale(eqIm,faces,scaleFactor,minNeighbours,0
-                |CV_HAAR_FIND_BIGGEST_OBJECT
-                |CV_HAAR_SCALE_IMAGE,minSize);
+  calc_face(eqIm, faces, scaleFactor, minNeighbours, minSize);
+  //detector.detectMultiScale(eqIm,faces,scaleFactor,minNeighbours,0,minSize);
   if(faces.size() < 1){return vector<Point2f>();}
   
   //predict face placement
@@ -49,6 +48,7 @@ void
 face_detector::
 train(ft_data &data,
       const string fname,
+	  const string fname_nested,
       const Mat &ref,
       const bool mirror,
       const bool visi,
@@ -57,16 +57,17 @@ train(ft_data &data,
       const int minNeighbours,
       const Size minSize)
 {
-  detector.load(fname.c_str()); detector_fname = fname; reference = ref.clone();
+  detector.load(fname); detector_fname = fname; 
+  detector_nested.load(fname_nested); detector_fname_nested = fname_nested;
+  reference = ref.clone();
   vector<float> xoffset(0),yoffset(0),zoffset(0);
   for(int i = 0; i < data.n_images(); i++){
     Mat im = data.get_image(i,0); if(im.empty())continue;
     vector<Point2f> p = data.get_points(i,false); int n = p.size();
     Mat pt = Mat(p).reshape(1,2*n);
     vector<Rect> faces; Mat eqIm; equalizeHist(im,eqIm);
-    detector.detectMultiScale(eqIm,faces,scaleFactor,minNeighbours,0
-                  |CV_HAAR_FIND_BIGGEST_OBJECT
-                  |CV_HAAR_SCALE_IMAGE,minSize);
+	calc_face(eqIm, faces, scaleFactor, minNeighbours, minSize);
+    //detector.detectMultiScale(eqIm,faces,scaleFactor,minNeighbours,0,minSize);
     if(faces.size() >= 1){
       if(visi){
     Mat I; cvtColor(im,I,CV_GRAY2RGB);
@@ -87,9 +88,8 @@ train(ft_data &data,
       p = data.get_points(i,true);
       pt = Mat(p).reshape(1,2*n);
       equalizeHist(im,eqIm);
-      detector.detectMultiScale(eqIm,faces,scaleFactor,minNeighbours,0
-                  |CV_HAAR_FIND_BIGGEST_OBJECT
-                |CV_HAAR_SCALE_IMAGE,minSize);
+      calc_face(eqIm, faces, scaleFactor, minNeighbours, minSize);
+	  //detector.detectMultiScale(eqIm,faces,scaleFactor,minNeighbours,0,minSize);
       if(faces.size() >= 1){
     if(visi){
       Mat I; cvtColor(im,I,CV_GRAY2RGB);
@@ -158,6 +158,7 @@ write(FileStorage &fs) const
   assert(fs.isOpened()); 
   fs << "{"
      << "fname"     << detector_fname
+	 << "fname_nested"	<< detector_fname_nested
      << "x offset"  << detector_offset[0]
      << "y offset"  << detector_offset[1]
      << "z offset"  << detector_offset[2]
@@ -171,10 +172,25 @@ read(const FileNode& node)
 {
   assert(node.type() == FileNode::MAP);
   node["fname"]     >> detector_fname;
+  node["fname_nested"]	>> detector_fname_nested;
   node["x offset"]  >> detector_offset[0];
   node["y offset"]  >> detector_offset[1];
   node["z offset"]  >> detector_offset[2];
   node["reference"] >> reference;
-  detector.load(detector_fname.c_str());
+  detector.load(detector_fname);
+  detector_nested.load(detector_fname_nested);
+}
+
+void face_detector::calc_face(Mat& image, vector<Rect>& faces, const float scaleFactor, const int minNeighbours, const Size minSize){
+	vector<Rect> face_candidates;
+	detector.detectMultiScale(image, face_candidates, scaleFactor, minNeighbours, 0, minSize);
+	for(size_t i = 0; i < face_candidates.size(); ++i){
+		vector<Rect> noses;
+		detector_nested.detectMultiScale(image(face_candidates[i]), noses); //default parameters are used.
+		if(noses.size() == 1){
+			faces.push_back(face_candidates[i]);
+			break; //find the first face.
+		}
+	}
 }
 //==============================================================================

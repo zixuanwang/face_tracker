@@ -20,9 +20,11 @@
 class face_detector{                       //face detector for initialisation
 public:
   string detector_fname;                   //file containing cascade classifier
+  string detector_fname_nested;              //file containing nested cascade classifier
   Vec3f detector_offset;                   //offset from center of detection
   Mat reference;                           //reference shape
   CascadeClassifier detector;              //face detector
+  CascadeClassifier detector_nested;
 
   vector<Point2f>                          //points for detected face in image
   detect(const Mat &im,                    //image containing face
@@ -33,6 +35,7 @@ public:
   void
   train(ft_data &data,                     //training data
     const string fname,                //cascade detector
+	const string fname_nested,            //nested cascade detector
     const Mat &ref,                    //reference shape
     const bool mirror = false,         //mirror data?
     const bool visi = false,           //visualise training?
@@ -58,6 +61,7 @@ protected:
 
   float                                    //scaling from @reference to @pts
   calc_scale(const Mat &pts);              //[x1;y1;...;xn;yn]
+  void calc_face(Mat& image, vector<Rect>& faces, const float scaleFactor, const int minNeighbours, const Size minSize);
 };
 //==============================================================================
 #endif

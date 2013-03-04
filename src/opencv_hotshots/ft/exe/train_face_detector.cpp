@@ -17,7 +17,7 @@
 #include <iostream>
 #define fl at<float>
 const char* usage = 
-"usage: ./train_face_detector detector_file annotation_file shape_model_file"
+"usage: ./train_face_detector detector_file detector_nested_file annotation_file shape_model_file"
 " detector_model_file [-f min_frac_of_pts_in_det_rect] [--mirror]";
 //==============================================================================
 bool
@@ -60,18 +60,18 @@ int main(int argc,char** argv)
   bool mirror = parse_mirror(argc,argv);
 
   //load data
-  ft_data data = load_ft<ft_data>(argv[2]);
-  shape_model smodel = load_ft<shape_model>(argv[3]);
+  ft_data data = load_ft<ft_data>(argv[3]);
+  shape_model smodel = load_ft<shape_model>(argv[4]);
   smodel.set_identity_params();
   vector<Point2f> r = smodel.calc_shape();
   Mat ref = Mat(r).reshape(1,2*r.size());
 
   //train face detector
   face_detector detector; 
-  detector.train(data,argv[1],ref,mirror,true,frac);
+  detector.train(data,argv[1],argv[2],ref,mirror,true,frac);
 
   //save detector
-  save_ft<face_detector>(argv[4],detector);
+  save_ft<face_detector>(argv[5],detector);
   return 0;
 }
 //==============================================================================
