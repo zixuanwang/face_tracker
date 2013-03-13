@@ -27,7 +27,7 @@ public:
   vector<string> imnames;                  //images
   vector<vector<Point2f> > points;         //points
   
-  inline int n_images(){return imnames.size();}
+  inline int n_images(){return static_cast<int>(imnames.size());}
 
   Mat                                      //idx'th image
   get_image(const int idx,                 //index of image to get

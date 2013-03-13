@@ -55,7 +55,7 @@ parse_mirror(int argc,char** argv)
 int main(int argc,char** argv)
 {
   //parse cmdline input
-  if(argc < 5){ cout << usage << endl; return 0;}
+  if(argc < 6){ cout << usage << endl; return 0;}
   float frac = parse_frac(argc,argv);
   bool mirror = parse_mirror(argc,argv);
 

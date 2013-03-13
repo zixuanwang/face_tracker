@@ -56,7 +56,7 @@ public:
   vector<patch_model> patches;             //patch models
 
   inline int                               //number of patches
-  n_patches(){return patches.size();}
+  n_patches(){return static_cast<int>(patches.size());}
 
   void 
   train(ft_data &data,                     //training data

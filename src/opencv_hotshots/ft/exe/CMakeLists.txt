@@ -8,7 +8,7 @@ ADD_EXECUTABLE(train_face_detector train_face_detector.cpp)
 ADD_EXECUTABLE(visualize_face_detector visualize_face_detector.cpp) 
 ADD_EXECUTABLE(train_face_tracker train_face_tracker.cpp) 
 ADD_EXECUTABLE(visualize_face_tracker visualize_face_tracker.cpp)
-ADD_EXECUTABLE(visualize_face_feature visualize_face_feature.cpp)
+ADD_EXECUTABLE(visualize_face_feature visualize_face_feature.cpp utilities.h utilities.cpp)
  
 TARGET_LINK_LIBRARIES(annotate ${OpenCV_LIBS} ${Boost_LIBRARIES} ft) 
 TARGET_LINK_LIBRARIES(visualize_annotations ${OpenCV_LIBS} ${Boost_LIBRARIES} ft) 
