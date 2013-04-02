@@ -1,8 +1,8 @@
 %YAML:1.0
 ft object:
    detector:
-      fname: "../data/haarcascades/haarcascade_frontalface_alt.xml"
-      fname_nested: "../data/haarcascades/haarcascade_mcs_nose.xml"
+      fname: "data/haarcascades/haarcascade_frontalface_alt.xml"
+      fname_nested: "data/haarcascades/haarcascade_mcs_nose.xml"
       x offset: -8.8843610137701035e-003
       y offset: 1.3562655448913574e-001
       z offset: 1.2898722887039185e+000

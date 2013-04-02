@@ -15,6 +15,7 @@ public:
 	~face_feature(void);
 	void calc_count(const std::vector<cv::Point2f>& points);
 	float polygon_area(const std::vector<cv::Point2f>& points, const std::vector<int>& indices);
+	float get_distance();
 	int get_blink_count(){return m_blink_count;}
 	int get_yawn_count(){return m_yawn_count;}
 	void set_blink_count(int blink_count){m_blink_count = blink_count;}
@@ -30,6 +31,7 @@ private:
 	int m_yawn_count;
 	bool m_blink_trigger;
 	bool m_yawn_trigger;
+	float m_distance;
 	std::list<float> m_mouth_area_list;
 	std::list<float> m_eye_area_list;
 };

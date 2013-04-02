@@ -79,6 +79,8 @@ int main(int argc,char** argv)
 
   //open video stream
   VideoCapture cam; 
+  VideoWriter writer;
+  writer.open("/home/zxwang/Desktop/tracker.avi", CV_FOURCC('M','P','4','2'), 30, cv::Size(640, 480));
   if(argc > 2)cam.open(atoi(argv[3])); else cam.open(0);
   if(!cam.isOpened()){
     cout << "Failed opening video file." << endl
@@ -88,16 +90,16 @@ int main(int argc,char** argv)
   namedWindow("face feature");
   //load camera model
   load_camera_model(argv[1]);
-  while(cam.get(CV_CAP_PROP_POS_AVI_RATIO) < 0.999999){
+  while(true){
     Mat im; cam >> im; 
 	//video_writer << im; // save frame.
     if(tracker.track(im,p)){
 		face.calc_count(tracker.points);
-		//head_pose(tracker.points);
 		tracker.draw(im);
 	}
-	draw_string(im,"blink: " + boost::lexical_cast<std::string>(face.get_blink_count()) + "  yawn: " + boost::lexical_cast<std::string>(face.get_yawn_count()));
+	draw_string(im,"blink: " + boost::lexical_cast<std::string>(face.get_blink_count()) + "  yawn: " + boost::lexical_cast<std::string>(face.get_yawn_count()) + " distance: " + boost::lexical_cast<std::string>(face.get_distance()));
     tracker.timer.display_fps(im,Point(1,im.rows-1));
+    writer << im;
     imshow("face feature",im);
     int c = waitKey(10);
     if(c == 'q')break;

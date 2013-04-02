@@ -47,7 +47,7 @@ void face_feature::calc_count(const std::vector<cv::Point2f>& points){
 		std::nth_element(eye_area_vector.begin(), eye_area_vector.begin() + middle, eye_area_vector.end());
 		float median_eye_area = eye_area_vector[middle];
 		// thresholding
-		if(median_mouth_area > 1.7f){
+		if(median_mouth_area > 1.6f){
 			m_yawn_trigger = true;
 		}else if(m_yawn_trigger){
 			m_yawn_trigger = false;
@@ -59,8 +59,8 @@ void face_feature::calc_count(const std::vector<cv::Point2f>& points){
 			m_blink_trigger = false;
 			++m_blink_count;
 		}
-		std::cout << median_eye_area << std::endl;
 	}
+	m_distance = 4215.2f / sqrtf(nose_area);
 }
 
 float face_feature::polygon_area(const std::vector<cv::Point2f>& points, const std::vector<int>& indices){
@@ -69,4 +69,8 @@ float face_feature::polygon_area(const std::vector<cv::Point2f>& points, const s
 		boost::geometry::append(polygon,boost::make_tuple(points[indices[i]].x,points[indices[i]].y));
 	}
 	return boost::geometry::area(polygon);
+}
+
+float face_feature::get_distance(){
+	return m_distance;
 }
