@@ -2,9 +2,7 @@ PROJECT(OPENCV_HOTSHOTS)
 
 cmake_minimum_required(VERSION 2.8)
 find_package(OpenCV REQUIRED)
-find_package(Boost COMPONENTS filesystem system REQUIRED)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+find_package(Boost REQUIRED)
 INCLUDE_DIRECTORIES(
 ${OPENCV_INCLUDE_DIR}
 ${CMAKE_CURRENT_SOURCE_DIR}

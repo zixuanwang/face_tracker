@@ -60,13 +60,13 @@ parse_help(int argc,char** argv)
 int main(int argc,char** argv)
 {
 	face_feature face;
-	cv::VideoWriter video_writer;
-	video_writer.open(argv[4], CV_FOURCC('M','P','4','2'), 30, cv::Size(640, 480));
 
   //parse command line arguments
   if(parse_help(argc,argv)){cout << usage << endl; return 0;}
   if(argc < 3){cout << usage << endl; return 0;}
-  
+  	//cv::VideoWriter video_writer;
+	//video_writer.open(argv[4], CV_FOURCC('M','P','4','2'), 30, cv::Size(640, 480));
+
   //load detector model
   face_tracker tracker = load_ft<face_tracker>(argv[2]);
 
@@ -90,7 +90,7 @@ int main(int argc,char** argv)
   load_camera_model(argv[1]);
   while(cam.get(CV_CAP_PROP_POS_AVI_RATIO) < 0.999999){
     Mat im; cam >> im; 
-	video_writer << im; // save frame.
+	//video_writer << im; // save frame.
     if(tracker.track(im,p)){
 		face.calc_count(tracker.points);
 		//head_pose(tracker.points);
@@ -108,8 +108,5 @@ int main(int argc,char** argv)
 	}
   }
   destroyWindow("face feature"); cam.release(); return 0;
-  
-
-
 	return 0;
 }
