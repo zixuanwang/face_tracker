@@ -39,10 +39,10 @@ const char* usage = "usage: ./visualise_face_feature camera_model tracker_model 
 //==============================================================================
 void
 draw_string(Mat img,                       //image to draw on
-        const string text)             //text to draw
+        const string text, int line_number = 1)             //text to draw
 {
   Size size = getTextSize(text,FONT_HERSHEY_COMPLEX,0.6f,1,NULL);
-  putText(img,text,Point(0,size.height),FONT_HERSHEY_COMPLEX,0.6f,
+  putText(img,text,Point(5, (size.height + 5) * line_number),FONT_HERSHEY_COMPLEX,0.6f,
       CV_RGB(200,50,50),1,CV_AA);
 }
 //==============================================================================
@@ -79,8 +79,8 @@ int main(int argc,char** argv)
 
   //open video stream
   VideoCapture cam; 
-  VideoWriter writer;
-  writer.open("/home/zxwang/Desktop/tracker.avi", CV_FOURCC('M','P','4','2'), 30, cv::Size(640, 480));
+  //VideoWriter writer;
+  //writer.open("/home/zxwang/Desktop/tracker.avi", CV_FOURCC('M','P','4','2'), 30, cv::Size(640, 480));
   if(argc > 2)cam.open(atoi(argv[3])); else cam.open(0);
   if(!cam.isOpened()){
     cout << "Failed opening video file." << endl
@@ -97,9 +97,10 @@ int main(int argc,char** argv)
 		face.calc_count(tracker.points);
 		tracker.draw(im);
 	}
-	draw_string(im,"blink: " + boost::lexical_cast<std::string>(face.get_blink_count()) + "  yawn: " + boost::lexical_cast<std::string>(face.get_yawn_count()) + " distance: " + boost::lexical_cast<std::string>(face.get_distance()));
-    tracker.timer.display_fps(im,Point(1,im.rows-1));
-    writer << im;
+	draw_string(im,"Press 'd' to reinitialize. Press 'q' to quit.", 1);
+    draw_string(im, "blink: " + boost::lexical_cast<std::string>(face.get_blink_count()) + "  yawn: " + boost::lexical_cast<std::string>(face.get_yawn_count()) + " distance: " + boost::lexical_cast<std::string>(face.get_distance()), 2);
+	tracker.timer.display_fps(im,Point(1,im.rows-1));
+    //writer << im;
     imshow("face feature",im);
     int c = waitKey(10);
     if(c == 'q')break;
